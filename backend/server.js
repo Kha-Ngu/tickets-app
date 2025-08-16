@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 
 // ---- config ----
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
-const MONGO_URL = process.env.MONGO_URL || "mongodb://mongodb:27017/tickets";
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URL || "";
 const PORT = Number(process.env.PORT || 3000);
 
 // ---- app & sockets ----
@@ -33,8 +33,34 @@ app.use((req, _res, next) => {
 
 // ---- Mongo ----
 mongoose.set("strictQuery", true);
-await mongoose.connect(MONGO_URL);
-console.log("✅ Mongo connected:", MONGO_URL);
+
+function maskUri(u) {
+  try {
+    const url = new URL(u);
+    if (url.username || url.password) {
+      url.username = "****";
+      url.password = "****";
+    }
+    return url.toString();
+  } catch {
+    return "<invalid URI>";
+  }
+}
+
+if (!MONGODB_URI) {
+  console.error("❌ No Mongo connection string set. Define MONGODB_URI in your environment.");
+  process.exit(1);
+}
+
+try {
+  await mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+  });
+  console.log("✅ Mongo connected:", maskUri(MONGODB_URI));
+} catch (err) {
+  console.error("❌ MongoDB connection error:", err?.message || err);
+  process.exit(1);
+}
 
 const userSchema = new mongoose.Schema(
   {
