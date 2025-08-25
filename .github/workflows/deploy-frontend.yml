@@ -2,7 +2,7 @@ name: Deploy frontend to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]     # ← change 'main' if your default branch is called something else
   workflow_dispatch:
 
 permissions:
@@ -36,10 +36,10 @@ jobs:
 
       - name: Build (GitHub Pages)
         env:
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}   # e.g. /tickets-app/
           VITE_USE_HASH_ROUTER: 'true'
-          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
-          VITE_SOCKET_URL: ${{ vars.VITE_SOCKET_URL }}
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}     # e.g. https://ticketchart-api.onrender.com
+          VITE_SOCKET_URL: ${{ vars.VITE_SOCKET_URL }} # same as above
         run: npm run build
 
       - name: Upload artifact
