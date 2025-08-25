@@ -21,10 +21,9 @@ export default function Signup(){
       // Defensive fallback: if someone hits /auth directly in dev, proxy now handles it;
       // but keep a direct fetch to be extra resilient.
       try{
-        const r = await fetch('/auth/signup', {
-          method:'POST',
-          headers: { 'Content-Type':'application/json' },
-          body: JSON.stringify(form),
+        const r = await api('/auth/signup', {
+          method: 'POST',
+          json: form, 
         });
         if(!r.ok){
           const txt = await r.text();

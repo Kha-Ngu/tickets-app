@@ -15,10 +15,9 @@ export default function Login(){
       setToken(token); nav('/'); 
     }catch(_){
       try{
-        const r = await fetch('/api/auth/login', {
-          method:'POST',
-          headers: { 'Content-Type':'application/json' },
-          body: JSON.stringify({ email, password })
+        const r = await api('/auth/login', {
+          method: 'POST',
+          json: { email, password },
         });
         if(!r.ok){
           const msg = await r.text();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { api } from './api';
 
 type Meta = Record<string, any>;
 type EventLite = { name: string; category: string; rows: number; cols: number; location: string; dateISO: string; meta: Meta };
@@ -17,8 +18,13 @@ export default function Home(){
   const nav = useNavigate();
 
   useEffect(() => {
-    fetch('/api/events/overview').then(r=>r.json()).then(d=>setByCat(d.byCategory||{})).catch(console.error);
-    fetch('/api/events/trending').then(r=>r.json()).then(d=>setTrending(d.trending||[])).catch(console.error);
+    api('/events/overview')
+      .then(d => setByCat(d.byCategory || {}))
+      .catch(console.error);
+
+    api('/events/trending')
+      .then(d => setTrending(d.trending || []))
+      .catch(console.error);
   }, []);
 
   function searchGo(){

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { api } from './api';
 
 type Meta = Record<string, any>;
 type EventLite = { name:string; category:string; rows:number; cols:number; location:string; dateISO:string; meta:Meta };
@@ -16,7 +17,11 @@ export default function Explore(){
   const [from, setFrom] = useState(params.get('from') || '');
   const [to, setTo] = useState(params.get('to') || '');
 
-  useEffect(()=>{ fetch('/api/events').then(r=>r.json()).then(setAll).catch(console.error); },[]);
+  useEffect(() => {
+    api('/events')
+      .then(setAll)
+      .catch(console.error);
+  }, []);
 
   const cats = useMemo(()=>['All', ...Array.from(new Set(all.map(e=>e.category)))], [all]);
 
