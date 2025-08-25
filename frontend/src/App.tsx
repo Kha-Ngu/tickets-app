@@ -17,7 +17,7 @@ const API_BASE: string = (import.meta as any).env?.VITE_API_BASE || '/api';
 function ApiWarmupGate({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [message, setMessage] = useState(
-    'Starting backend… This can take a few seconds on the free tier.'
+    'Starting backend… This can take a few seconds.'
   );
 
   useEffect(() => {
