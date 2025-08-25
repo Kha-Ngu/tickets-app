@@ -132,7 +132,7 @@ function auth(req, res, next) {
 }
 
 // ---------------- Health ----------------
-app.get("/healthz", (_req, res) => res.status(200).send("ok"));
+app.get("/health", (_req, res) => res.status(200).send("ok"));
 app.get("/health/mongo", async (_req, res) => {
   try {
     await mongoose.connection.db.adminCommand({ ping: 1 });
