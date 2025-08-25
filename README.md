@@ -1,24 +1,127 @@
-<h1>TicketCharts — Real-Time Ticketing Demo</h1> <p> A full-stack demo for browsing events, seeing what’s trending, and <strong>buying seats with real-time holds</strong> via WebSockets.<br/> Frontend is a React SPA (Vite). Backend is Node/Express with Socket.io and MongoDB (Atlas). </p> <hr/> <h2>🔗 Live Links</h2> <ul> <li><strong>Website (GitHub Pages):</strong> <a href="https://Kha-Ngu.github.io/tickets-app/">https://Kha-Ngu.github.io/tickets-app/</a></li> <li><strong>API (Render):</strong> <a href="https://ticketchart-api.onrender.com">https://ticketchart-api.onrender.com</a> <ul> <li>Health check: <a href="https://ticketchart-api.onrender.com/health">/health</a></li> </ul> </li> </ul> <p><em>Note:</em> On free tiers the API may “wake up” on the first request (a few seconds).</p> <hr/> <h2>📖 What It Does</h2> <ul> <li><strong>Browse events</strong> by category with date/location details.</li> <li><strong>Trending charts</strong> (“Hottest Right Now”) by popularity score.</li> <li><strong>Event page with seat map</strong> (available / held / sold).</li> <li><strong>Real-time seat holds</strong> with countdown and demo purchase flow.</li> <li><strong>Optional queue gating</strong> per event using a lightweight virtual queue.</li> <li><strong>Authentication</strong> (email/password) with JWT stored in <code>localStorage</code>.</li> <li><strong>Profile</strong> view for session basics.</li></ul> <hr/> <h2>🧱 Architecture</h2> <pre><code>GitHub Pages (static) └─ Frontend: React + Vite SPA - VITE_API_BASE + VITE_SOCKET_URL → points to backend - HashRouter for Pages to avoid 404 on refresh
+<h1>TicketCharts — Real-Time Ticketing Demo</h1>
 
-Render (Web Service)
-└─ Backend: Node + Express + Socket.io + MongoDB (Atlas)
+<p>
+A full-stack demo for browsing events, seeing what’s trending, and
+<strong>buying seats with real-time holds</strong> via WebSockets.<br/>
+Frontend: React + Vite (SPA). Backend: Node/Express + Socket.io + MongoDB (Atlas).
+</p>
 
-REST API under /
+<h2>🔗 Live Links</h2>
+<ul>
+  <li><strong>Website (GitHub Pages):</strong> <a href="https://Kha-Ngu.github.io/tickets-app/">https://Kha-Ngu.github.io/tickets-app/</a></li>
+  <li><strong>API (Render):</strong> <a href="https://ticketchart-api.onrender.com">https://ticketchart-api.onrender.com</a>
+    <ul>
+      <li>Health: <a href="https://ticketchart-api.onrender.com/health">/health</a></li>
+    </ul>
+  </li>
+</ul>
 
-WebSocket at /socket.io
+<h2>📖 What It Does</h2>
+<ul>
+  <li><strong>Browse events</strong> by category with date/location details.</li>
+  <li><strong>Trending charts</strong> (“Hottest Right Now”) by popularity score.</li>
+  <li><strong>Event page with seat map</strong> (available / held / sold).</li>
+  <li><strong>Real-time seat holds</strong> with countdown and demo purchase flow.</li>
+  <li><strong>Queue gating</strong> (optional per event) using a lightweight virtual queue.</li>
+  <li><strong>Auth</strong> (email/password) with JWT stored in <code>localStorage</code>.</li>
+</ul>
 
-Seeds demo events on startup
-</code></pre>
+<h2>🧱 Architecture</h2>
+<ul>
+  <li><strong>Frontend (GitHub Pages)</strong> — React + Vite SPA
+    <ul>
+      <li>Env: <code>VITE_API_BASE</code>, <code>VITE_SOCKET_URL</code>, <code>VITE_BASE_PATH</code></li>
+      <li>Router: HashRouter for Pages to avoid 404 on refresh</li>
+    </ul>
+  </li>
+  <li><strong>Backend (Render Web Service)</strong> — Node + Express + Socket.io + MongoDB (Atlas)
+    <ul>
+      <li>REST API under <code>/</code></li>
+      <li>WebSocket at <code>/socket.io</code></li>
+      <li>Seeds demo events on startup</li>
+    </ul>
+  </li>
+</ul>
 
-<hr/> <h2>🧰 Tech Stack</h2> <ul> <li><strong>Frontend:</strong> React 18, Vite, TypeScript, React Router (HashRouter on Pages)</li> <li><strong>Backend:</strong> Node.js, Express, Socket.io, MongoDB (Atlas), JWT</li> <li><strong>Hosting:</strong> GitHub Pages (frontend), Render (backend)</li> <li><strong>CI/CD:</strong> GitHub Actions to build <code>frontend/</code> and publish <code>dist</code> to Pages</li> </ul> <hr/> <h2>🗂 Project Structure (key files)</h2> <pre><code>frontend/ src/ App.tsx # routes Home.tsx # intro / featured Explore.tsx # all events Charts.tsx # "Hottest Right Now" (uses api('/events/trending')) EventPage.tsx # seat map, queue, purchase (socket.io) Login.tsx # api('/auth/login') Signup.tsx # api('/auth/signup') Profile.tsx api.ts # fetch helper (reads VITE_API_BASE, adds JWT) main.tsx # HashRouter switch when VITE_USE_HASH_ROUTER='true' vite.config.ts # base path from VITE_BASE_PATH; dev proxy → :3000
+<h2>🧰 Tech Stack</h2>
+<ul>
+  <li><strong>Frontend:</strong> React 18, Vite, TypeScript, React Router (HashRouter on Pages)</li>
+  <li><strong>Backend:</strong> Node.js, Express, Socket.io, MongoDB (Atlas), JWT</li>
+  <li><strong>Hosting:</strong> GitHub Pages (frontend), Render (backend)</li>
+  <li><strong>CI/CD:</strong> GitHub Actions to build <code>frontend/</code> and publish <code>dist</code> to Pages</li>
+</ul>
 
-backend/
-server.js # Express API + Socket.io + seeding + /health
-.env.example # PORT, JWT_SECRET, MONGODB_URI (for local dev)
-Dockerfile # optional
+<h2>🗂 Project Structure (key files)</h2>
+<ul>
+  <li><code>frontend/</code>
+    <ul>
+      <li><code>src/App.tsx</code> — routes</li>
+      <li><code>src/Home.tsx</code> — intro/featured</li>
+      <li><code>src/Explore.tsx</code> — all events</li>
+      <li><code>src/Charts.tsx</code> — trending (“Hottest Right Now”)</li>
+      <li><code>src/EventPage.tsx</code> — seat map, queue, purchase (socket.io)</li>
+      <li><code>src/Login.tsx</code> — <code>api('/auth/login')</code></li>
+      <li><code>src/Signup.tsx</code> — <code>api('/auth/signup')</code></li>
+      <li><code>src/Profile.tsx</code></li>
+      <li><code>src/api.ts</code> — fetch helper (reads <code>VITE_API_BASE</code>, adds JWT)</li>
+      <li><code>vite.config.ts</code> — base path (<code>VITE_BASE_PATH</code>), dev proxy → <code>:3000</code></li>
+    </ul>
+  </li>
+  <li><code>backend/</code>
+    <ul>
+      <li><code>server.js</code> — Express API + Socket.io + seeding + <code>/health</code></li>
+      <li><code>.env.example</code> — <code>PORT</code>, <code>JWT_SECRET</code>, <code>MONGODB_URI</code> (local dev)</li>
+      <li><code>Dockerfile</code> — optional</li>
+    </ul>
+  </li>
+  <li><code>.github/workflows/deploy-frontend.yml</code> — builds frontend &amp; deploys to GitHub Pages</li>
+</ul>
 
-.github/workflows/
-deploy-frontend.yml # builds frontend & deploys to GitHub Pages
-</code></pre>
+<h2>🧪 Capabilities</h2>
+<ul>
+  <li><strong>Live holds &amp; purchase flow:</strong> click a seat → held briefly; all clients update instantly. Countdown on held seats; expiry reverts to available.</li>
+  <li><strong>Queue gating (optional):</strong> users join a queue for an event; receive position/ETA/active counts; only admitted users can purchase.</li>
+  <li><strong>Auth:</strong> email/password signup &amp; login with JWT; <code>api()</code> attaches <code>Authorization</code> header.</li>
+</ul>
+<p><strong>Note:</strong> Payment UI is a demo. Do <strong>not</strong> enter real card data.</p>
 
-<hr/> <h2>🧪 Capabilities</h2> <ul> <li><strong>Real-time holds &amp; purchase flow:</strong> click a seat → held for a short duration; all clients see the change live. Visible countdown; expiry reverts to available.</li> <li><strong>Queue gating (optional):</strong> logged-in users can join a queue for an event; receive position/ETA/active counts; only admitted users can purchase.</li> <li><strong>Auth:</strong> email/password signup &amp; login; JWT persisted in <code>localStorage</code> and attached by <code>api()</code>.</li> </ul> <p><strong>Note:</strong> Payment UI is a <em>demo</em>. Do <strong>not</strong> enter real card data.</p> <hr/> <h2>⚙️ Configuration</h2> <h3>Frontend (build-time vars)</h3> <p>Set these as <em>Repository → Settings → Secrets and variables → Variables</em>:</p> <ul> <li><code>VITE_BASE_PATH</code> → <code>/<em>repo-name</em>/</code> (e.g., <code>/tickets-app/</code>)</li> <li><code>VITE_API_BASE</code> → <code>https://ticketchart-api.onrender.com</code></li> <li><code>VITE_SOCKET_URL</code> → <code>https://ticketchart-api.onrender.com</code></li> </ul> <p>The workflow sets <code>VITE_USE_HASH_ROUTER='true'</code> so refresh works on Pages.</p> <h3>Backend (Render/Railway environment)</h3> <ul> <li><code>JWT_SECRET</code> → long random string</li> <li><code>MONGODB_URI</code> → Atlas URI (URL-encode special characters)</li> <li><em>Do not set</em> <code>PORT</code>; the platform injects it.</li> </ul> <hr/> <h2>🧑‍💻 Run Locally</h2> <h3>Option A — UI-only (fastest)</h3> <pre><code>cd frontend npm install npm run dev # open http://localhost:5173 </code></pre> <p>You’ll see the UI. API calls will fail unless the backend is running.</p> <h3>Option B — Full stack</h3> <ol> <li>Start MongoDB (local or Atlas).</li> <li><strong>Backend</strong>: <pre><code>cd backend cp .env.example .env # edit MONGODB_URI if needed npm install npm start # http://localhost:3000 </code></pre> </li> <li><strong>Frontend</strong>: <pre><code>cd frontend npm install npm run dev # http://localhost:5173 </code></pre> </li> </ol> <p>Vite’s dev proxy forwards <code>/api/*</code> and <code>/socket.io</code> to <code>http://localhost:3000</code>.</p> <hr/> <h2>🚀 Deployment</h2> <h3>Backend → Render</h3> <ol> <li>Create a <strong>Web Service</strong> from this repo.<br/> Root Directory: <code>backend</code> · Build: <code>npm ci</code> · Start: <code>npm start</code></li> <li>Ensure the server binds publicly: <pre><code>// backend/server.js server.listen(process.env.PORT, '0.0.0.0', () =&gt; { console.log(`backend listening on ${process.env.PORT}`); }); </code></pre> </li> <li>Add environment variables: <code>JWT_SECRET</code>, <code>MONGODB_URI</code>.</li> <li>Deploy and verify: <a href="https://ticketchart-api.onrender.com/health">/health</a>.</li> </ol> <h3>Frontend → GitHub Pages (Actions)</h3> <ol> <li>Ensure workflow at <code>/.github/workflows/deploy-frontend.yml</code>.</li> <li>Set repo variables: <ul> <li><code>VITE_BASE_PATH = /tickets-app/</code></li> <li><code>VITE_API_BASE = https://ticketchart-api.onrender.com</code></li> <li><code>VITE_SOCKET_URL = https://ticketchart-api.onrender.com</code></li> </ul> </li> <li>Repo <strong>Settings → Pages → Source = GitHub Actions</strong>.</li> <li>Push to <code>main</code> or run the workflow from <strong>Actions</strong>.</li> <li>Open: <a href="https://Kha-Ngu.github.io/tickets-app/">https://Kha-Ngu.github.io/tickets-app/</a></li> </ol> <hr/> <h2>🔌 API (typical routes)</h2> <p><em>Exact names can vary; these match the current frontend calls.</em></p> <ul> <li><code>GET /health</code> → <code>{ ok: true, uptime }</code></li> <li><code>POST /auth/signup</code> → <code>{ token, user }</code></li> <li><code>POST /auth/login</code> → <code>{ token, user }</code></li> <li><code>GET /events</code> → <code>Event[]</code></li> <li><code>GET /events/trending</code> → <code>{ trending: Event[] }</code></li> <li><code>GET /events/overview</code> → <code>{ byCategory: Record&lt;string, Event[]&gt; }</code></li> <li><code>GET /events/by-name/:name</code> → <code>Event</code></li> <li><code>POST /events/:name/hold</code> → <code>{ expiresAt }</code></li> <li><code>POST /events/:name/unhold</code></li> <li><code>POST /events/:name/purchase</code></li> </ul> <p><strong>Socket.io</strong><br/> Path: <code>/socket.io</code><br/> Server → client: <code>seat:update</code>, <code>queue:update</code><br/> Client → server: <code>join:event</code> (subscribe to an event’s room) </p> <hr/> <h2>🧭 Pages &amp; Components</h2> <ul> <li><strong>Home</strong> — intro and featured sections</li> <li><strong>Explore</strong> — all events</li> <li><strong>Charts</strong> — trending list</li> <li><strong>EventPage</strong> — seat map, holds, purchase, queue</li> <li><strong>Login / Signup</strong> — auth flows</li> <li><strong>Profile</strong> — basic session info</li> </ul> <hr/> <h2>🩹 Troubleshooting</h2> <ul> <li><strong>Pages loads but assets 404</strong> → Ensure <code>VITE_BASE_PATH</code> is exactly <code>/<em>repo-name</em>/</code> (leading <em>and</em> trailing slash). Rebuild via Actions.</li> <li><strong>Refresh on deep route 404s</strong> → Build with <code>VITE_USE_HASH_ROUTER='true'</code> and ensure <code>main.tsx</code> switches to <code>HashRouter</code>.</li> <li><strong>API calls fail</strong> → Check <code>VITE_API_BASE</code> / <code>VITE_SOCKET_URL</code> point to the Render origin (HTTPS). Rebuild Pages.</li> <li><strong>WebSocket not connecting</strong> → Confirm <code>VITE_SOCKET_URL</code> is the Render origin and client uses <code>{ transports: ['websocket'] }</code>.</li> <li><strong>“Cannot GET /” on Render</strong> → That’s normal for the API root. Optionally add: <pre><code>app.get('/', (_req, res) =&gt; res.send('TicketCharts API is running.'));</code></pre> </li> </ul> <hr/> <h2>🔒 Notes</h2> <ul> <li>This is a demo app. Do <strong>not</strong> enter real payment details.</li> <li>CORS is permissive for demonstration. Tighten for production.</li> <li>JWT is kept in <code>localStorage</code> for simplicity.</li> </ul> <hr/> <h2>📝 License</h2> <p> For educational/demo use. If you plan to use in production, harden auth, validation, error handling, and deployment settings. </p> <hr/> <h2>❓ FAQ</h2> <p><strong>What link should I share?</strong><br/> <a href="https://Kha-Ngu.github.io/tickets-app/">https://Kha-Ngu.github.io/tickets-app/</a> </p> <p><strong>Does GitHub Pages go offline?</strong><br/> It’s static hosting and stays up as long as the repo exists and you’re within usage limits. </p> <p><strong>Why do I see “Cannot GET /” on Render?</strong><br/> Render hosts the API. The website is on GitHub Pages. </p> ::contentReference[oaicite:0]{index=0}
+<h2>⚙️ Configuration</h2>
+
+<h3>Frontend (build-time vars)</h3>
+<p>Set these in <em>Repository → Settings → Secrets and variables → Variables</em>:</p>
+<ul>
+  <li><code>VITE_BASE_PATH</code> → <code>/<em>repo-name</em>/</code> (e.g., <code>/tickets-app/</code>)</li>
+  <li><code>VITE_API_BASE</code> → <code>https://ticketchart-api.onrender.com</code></li>
+  <li><code>VITE_SOCKET_URL</code> → <code>https://ticketchart-api.onrender.com</code></li>
+</ul>
+<p>The workflow sets <code>VITE_USE_HASH_ROUTER='true'</code> so refresh works on Pages.</p>
+
+<h3>Backend (Render/Railway env)</h3>
+<ul>
+  <li><code>JWT_SECRET</code> — long random string</li>
+  <li><code>MONGODB_URI</code> — Atlas URI (URL-encode special characters)</li>
+  <li><em>Do not set</em> <code>PORT</code> — platform injects it</li>
+</ul>
+
+<h2>🧭 Pages &amp; Components</h2>
+<ul>
+  <li><strong>Home</strong>, <strong>Explore</strong>, <strong>Charts</strong></li>
+  <li><strong>EventPage</strong> — seat map, holds, queue, purchase</li>
+  <li><strong>Login</strong>, <strong>Signup</strong>, <strong>Profile</strong></li>
+</ul>
+
+<h2>🩹 Troubleshooting</h2>
+<ul>
+  <li>Assets 404 on Pages → ensure <code>VITE_BASE_PATH</code> is exactly <code>/<em>repo-name</em>/</code> (with leading &amp; trailing slash), then rebuild.</li>
+  <li>Refresh 404 on Pages → HashRouter is enabled at build (<code>VITE_USE_HASH_ROUTER='true'</code>).</li>
+  <li>API calls fail → <code>VITE_API_BASE</code>/<code>VITE_SOCKET_URL</code> must point to the Render origin (HTTPS). Rebuild Pages.</li>
+  <li>WebSocket fails → confirm the URL and that client uses <code>{ transports: ['websocket'] }</code>.</li>
+  <li>“Cannot GET /” on Render → expected for API root (optional friendly route available).</li>
+</ul>
+
+<h2>🔒 Notes</h2>
+<ul>
+  <li>Demo app — do <strong>not</strong> enter real payment details.</li>
+  <li>CORS is permissive for demo; harden for production.</li>
+  <li>JWT stored in <code>localStorage</code> for simplicity.</li>
+</ul>
