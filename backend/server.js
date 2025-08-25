@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 
 // ---- config ----
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URL || "";
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URL || "mongodb+srv://khanhngu1804:Btssvt13@cluster0.dx0stdy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const PORT = Number(process.env.PORT || 3000);
 
 // ---- app & sockets ----
@@ -550,4 +550,6 @@ const minutes = (n) => n * 60 * 1000;
 })();
 
 // start
-server.listen(PORT, () => console.log(`backend listening on ${PORT}`));
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`backend listening on ${PORT}`);
+});

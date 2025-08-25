@@ -1,5 +1,5 @@
 // Small helper that always talks to the backend via the Vite proxy (/api → :3000)
-const API_BASE = '/api';
+const API_BASE: string = (import.meta as any).env?.VITE_API_BASE || '/api';
 
 const TOKEN_KEY = 'tickets.token';
 export const getToken = () => localStorage.getItem(TOKEN_KEY) || '';

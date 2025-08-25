@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
+const SOCKET_URL: string = (import.meta as any).env?.VITE_SOCKET_URL || '/';
 import { api, getToken } from './api';
 
 type SeatStatus = 'available'|'held'|'sold';
@@ -28,15 +29,15 @@ export default function EventPage(){
 
   // Load event
   useEffect(()=>{
-    fetch(`/api/events/by-name/${encodeURIComponent(name)}`)
-      .then(r=>r.json())
-      .then(setEv)
-      .catch(console.error);
-  }, [name]);
+  // Use api(...) so it respects VITE_API_BASE in production
+  api(`/events/by-name/${encodeURIComponent(name)}`)
+    .then(setEv)
+    .catch(console.error);
+}, [name]);
 
   // Socket
   useEffect(()=>{
-    const s = io('/', { path:'/socket.io' });
+    const s = io(SOCKET_URL, { path:'/socket.io', transports:['websocket'] });
     socketRef.current = s;
     s.emit('join:event', name);
     return ()=>{ s.disconnect(); };
